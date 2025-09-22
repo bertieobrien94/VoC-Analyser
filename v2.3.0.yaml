@@ -123,21 +123,83 @@ components:
         - Person
         - Timestamp
         - Type
-        - Subject_ID
+        - Category_ID
         - Created_At
         - Updated_At
+      additionalProperties: false
       properties:
-        Feedback_Item_ID: { type: string, description: "UUID, like fb_xxxxxx" }
-        Feedback_Item:    { type: string, description: "Short summary (3–10 words)" }
-        Quote:            { type: string, description: "Verbatim excerpt" }
-        Person:           { type: string, description: "Customer/user name or Unknown" }
-        Timestamp:        { type: string, description: "YYYY-MM-DD HH:MM:SS or Unknown" }
-        Type:             { type: string, enum: ["Positive feedback", "Change request", "Needs clarification", "Market insight", "Opportunity"] }
-        Subject_ID:       { type: string, description: "UUID from Taxonomy where Status=Active" }
-        Source_Type:      { type: string, enum: ["Email", "Transcript", "Message", "Support ticket", "Unknown"] }
-        Source_Ref:       { type: string, description: "Source URL or stable key" }
-        Created_At:       { type: string, description: "ISO-8601 timestamp" }
-        Updated_At:       { type: string, description: "ISO-8601 timestamp" }
+        Feedback_Item_ID:
+          type: string
+          description: UUID, like fb_000001, fb_000002
+        Feedback_Item:
+          type: string
+          description: Short LLM-generated summary (3–10 words)
+        Quote:
+          type: string
+          description: Verbatim excerpt
+        Person:
+          type: string
+          description: Customer/user name or Unknown
+        Timestamp:
+          type: string
+          description: ISO-8601 Timestamp or Unknown
+        Type:
+          type: string
+          enum:
+            - Positive feedback
+            - Change request
+            - Needs clarification
+            - Market insight
+            - Opportunity
+        Subject_ID:
+          type: string
+          nullable: true
+          description: FK to Subjects (Status=Active)
+        Subcategory_ID:
+          type: string
+          nullable: true
+          description: FK to Subcategories (Status=Active)
+        Category_ID:
+          type: string
+          description: FK to Categories (Status=Active). Must always be set.
+        Source_Type:
+          type: string
+          enum:
+            - Email
+            - Transcript
+            - Message
+            - Support ticket
+            - RFI/RFP
+            - Unknown
+        Source_Ref:
+          type: string
+          description: Reference to source file, e.g. a URL
+        Created_At:
+          type: string
+          description: System ISO-8601 timestamp
+        Updated_At:
+          type: string
+          description: System ISO-8601 timestamp
+        mapping_level:
+          type: string
+          enum: [subject, subcategory, category]
+          description: Granularity at which the final mapping was applied.
+        mapping_confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Confidence score for the final applied mapping.
+        mapping_candidates:
+          type: array
+          description: Up to 3 alt candidates (when Subject/Subcategory not set)
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              id: { type: string }
+              name: { type: string }
+              parent_category: { type: string }
+              score: { type: number }
 
     FeedbackItemUpdate:
       type: object
@@ -365,15 +427,17 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/FeedbackItem' }
+                
     post:
       tags: [FeedbackItems]
       operationId: createFeedbackItem
-      summary: Insert one or many structured feedback items
+      summary: Insert a single structured feedback item
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/FeedbackItem' }
+            schema:
+              $ref: "#/components/schemas/FeedbackItem"
       responses:
         "200":
           description: Inserted row(s) as returned by Sheet.best
@@ -381,7 +445,8 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/FeedbackItem' }
+                items:
+                  $ref: "#/components/schemas/FeedbackItem"
 
   /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_Item_ID/{feedback_item_id}:
     patch:
