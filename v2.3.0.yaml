@@ -180,16 +180,16 @@ components:
         Updated_At:
           type: string
           description: System ISO-8601 timestamp
-        mapping_level:
+        Mapping_Level:
           type: string
           enum: [subject, subcategory, category]
           description: Granularity at which the final mapping was applied.
-        mapping_confidence:
+        Mapping_Confidence:
           type: number
           minimum: 0
           maximum: 1
           description: Confidence score for the final applied mapping.
-        mapping_candidates:
+        Mapping_Candidates:
           type: array
           description: Up to 3 alt candidates (when Subject/Subcategory not set)
           items:
