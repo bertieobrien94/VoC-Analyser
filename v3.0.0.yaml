@@ -95,10 +95,6 @@ components:
       minProperties: 1
       additionalProperties: false
       properties:
-        Summary:   { type: string, description: "LLM-generated (3–10 words)" }
-        Quote:     { type: string, description: "Verbatim customer excerpt" }
-        Person:    { type: string, description: "Name or 'Unknown'" }
-        Timestamp: { type: string, description: "ISO-8601 or 'Unknown'" }
         Type:
           type: string
           description: "Feedback classification (see instructions Step 2a)"
@@ -107,10 +103,6 @@ components:
           type: string
           nullable: true
           description: "FK to Terms (Status=Active)."
-        Source_Type:
-          type: string
-          enum: ["Email","Transcript","Message","Support ticket","RFI/RFP","Unknown"]
-        Source_Ref:  { type: string, nullable: true, description: "URL/transcript/file ref" }
         mapping_level:
           type: integer
           enum: [1,2,3]
@@ -120,8 +112,6 @@ components:
           minimum: 0
           maximum: 1
           description: "Confidence for the assigned Term"
-        Created_By:  { type: string }
-        Created_At:  { type: string, format: date-time }
         Updated_At:  { type: string, format: date-time }
 
     Term:
