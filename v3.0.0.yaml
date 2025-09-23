@@ -106,8 +106,8 @@ components:
         Status:
           type: string
           enum: [Active, Deprecated, Draft]
-        Parent_ID:   { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
-        Canonical_ID:{ type: string, nullable: true, description: "Active replacement for Deprecated terms" }
+        Parent_ID:    { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
+        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms" }
         Ordinal:     { type: integer, minimum: 0, nullable: true }
         Depth:       { type: integer, nullable: true }
         Path_IDs:    { type: string, nullable: true }
