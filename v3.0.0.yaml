@@ -260,11 +260,11 @@ paths:
           application/json:
             schema:
               type: object
-              required: [ Term_ID, Updated_At ]
+              required: [ Canonical_Term_ID, Updated_At ]
               properties:
-                Term_ID:
+                Canonical_Term_ID:
                   type: string
-                  description: "The *new* canonical Term_ID to set"
+                  description: "The *new* canonical Term_ID to set on matching FeedbackItems"
                 Updated_At:
                   type: string
                   format: date-time
