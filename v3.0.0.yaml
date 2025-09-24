@@ -120,7 +120,7 @@ components:
           type: string
           enum: [Active, Deprecated, Draft]
         Parent_ID:    { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
-        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms" }
+        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms (must differ from Term_ID)" }
         Ordinal:     { type: integer, minimum: 0, nullable: true }
         Depth:       { type: integer, nullable: true }
         Path_IDs:    { type: string, nullable: true }
@@ -129,6 +129,52 @@ components:
         Created_By:  { type: string }
         Created_At:  { type: string, format: date-time }
         Updated_At:  { type: string, format: date-time }
+      allOf:
+        - if:
+            properties:
+              Level: { const: 1 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID: { const: null }
+        - if:
+            properties:
+              Level: { const: 2 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Level: { const: 3 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Status: { const: Deprecated }
+            required: [Status]
+          then:
+            required: [Canonical_ID]
+            properties:
+              Canonical_ID:
+                type: string
+                nullable: false
+      x-validationRules:
+        - name: level_parent_consistency
+          summary: "Level 2 Terms require a Level 1 parent; Level 3 Terms require a Level 2 parent."
+          expression: "(Level != 2 or parent.Level = 1) and (Level != 3 or parent.Level = 2)"
+        - name: deprecated_terms_require_distinct_canonical
+          summary: "Deprecated Terms must reference a different Canonical_ID."
+          expression: "Status != 'Deprecated' or (Canonical_ID is not null and Canonical_ID <> Term_ID)"
 
     TermUpdate:
       type: object
@@ -148,7 +194,7 @@ components:
           type: string
           enum: [Active, Deprecated, Draft]
         Parent_ID:    { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
-        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms" }
+        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms (must differ from Term_ID)" }
         Ordinal:     { type: integer, minimum: 0, nullable: true }
         Depth:       { type: integer, nullable: true }
         Path_IDs:    { type: string, nullable: true }
@@ -157,6 +203,52 @@ components:
         Created_By:  { type: string }
         Created_At:  { type: string, format: date-time }
         Updated_At:  { type: string, format: date-time }
+      allOf:
+        - if:
+            properties:
+              Level: { const: 1 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID: { const: null }
+        - if:
+            properties:
+              Level: { const: 2 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Level: { const: 3 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Status: { const: Deprecated }
+            required: [Status]
+          then:
+            required: [Canonical_ID]
+            properties:
+              Canonical_ID:
+                type: string
+                nullable: false
+      x-validationRules:
+        - name: update_level_parent_consistency
+          summary: "When updating Level to 2 or 3, include the correct parent Term reference."
+          expression: "(Level != 2 or Parent_ID is not null) and (Level != 3 or Parent_ID is not null)"
+        - name: update_deprecated_terms_require_distinct_canonical
+          summary: "Status=Deprecated updates must supply a Canonical_ID different from Term_ID."
+          expression: "Status != 'Deprecated' or (Canonical_ID is not null and Canonical_ID <> Term_ID)"
 
 paths:
 
