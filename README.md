@@ -12,11 +12,17 @@ VoC Analyser presents multiple tools to manage context at scale, driving greater
 
 # Jobs to be Done
 1. When I'm making decisions about what to prioritise in and around sprint planning...
-	a. I need to review data blah blah
-	b. And I face such and such challenges
-  c. I wish for these potential gains
+	a. I need to (i) review and reflect on trends in customer demand and (ii) demonstrate those trends to team-mates and stakeholders...
+	b. ... So that we build the most valuable product for our market with a motivated team
+	c. Pains
+		c.i) Datasets are too large for human _or_ LLM quantification at a glance
+		c.ii) Data is under-emphasised if I'm not on the call
+		c.iii) Data is aggregated "in my head", meaning it's prone to bias, and difficult to share with others (leading to knowledge silo and trust issues)
+    d. I want reporting that identifies, at a granular level, what features/fixes we can develop that will bring the most value to customers.
 
 2. When I'm refining a feature (e.g. ideating) with my team,
-	a. I need to share discovered knowledge about the customer JtbD and expectations for the feature
-	b. But that data is "locked" in call recordings and messages that I can't search through easily
+	a. I need to share discovered knowledge about the customer JtbD and expectations for the feature...
+	b. ... So that the team can come up with great ideas and be confident they'll meet requirements.
+	c. But the useful  data is "locked" in call recordings and messages that I can't search through easily.
+	d. I want a quick way to locate every relevant customer quote regarding a specific feature, with the ability to bring up the original text/recording.
 
