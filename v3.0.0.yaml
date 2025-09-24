@@ -193,7 +193,12 @@ paths:
       operationId: updateTerm
       summary: Update Term by Term_ID
       parameters:
-        - $ref: '#/components/parameters/TermIdParam'
+        - name: Term_ID
+          in: path
+          required: true
+          description: Primary key of a Term row
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -234,7 +239,12 @@ paths:
       operationId: updateFeedbackItem
       summary: Update Feedback Item by Feedback_ID
       parameters:
-        - $ref: '#/components/parameters/FeedbackIdParam'
+        - name: Feedback_ID
+          in: path
+          required: true
+          description: Primary key of a Feedback row
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -253,7 +263,12 @@ paths:
       description: >
         Use for canonicalization: remap all FeedbackItems from a deprecated Term to its Canonical_ID.
       parameters:
-        - $ref: '#/components/parameters/TermIdParam'
+        - name: Term_ID
+          in: path
+          required: true
+          description: Primary key of a Term row
+          schema:
+            type: string
       requestBody:
         required: true
         content:
