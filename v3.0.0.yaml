@@ -351,30 +351,31 @@ paths:
                schema:
                  type: array
                  items: { $ref: '#/components/schemas/FeedbackItem' }
-    post:
-      operationId: createFeedbackItem
-      summary: Create Feedback Item
-      description: >
-        Create a new Feedback Item. The server enforces idempotency by calculating
-        `sha256(Quote|Person|Timestamp|Term_ID)` and, when a collision occurs,
-        applies the payload as an update to the existing record (behaving like a
-        PATCH) and returns `200 OK` instead of `201 Created`.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/FeedbackItem' }
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/FeedbackItem' }
-        '200':
-          description: Updated existing Feedback Item via idempotency hash collision
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/FeedbackItem' }
+
+     post:
+       operationId: createFeedbackItem
+       summary: Create Feedback Item
+       description: >
+         Create a new Feedback Item. The server enforces idempotency by calculating
+         `sha256(Quote|Person|Timestamp|Term_ID)` and, when a collision occurs,
+         applies the payload as an update to the existing record (behaving like a
+         PATCH) and returns `200 OK` instead of `201 Created`.
+       requestBody:
+         required: true
+         content:
+           application/json:
+             schema: { $ref: '#/components/schemas/FeedbackItem' }
+       responses:
+         '201':
+           description: Created
+           content:
+             application/json:
+               schema: { $ref: '#/components/schemas/FeedbackItem' }
+         '200':
+           description: Updated existing Feedback Item via idempotency hash collision
+           content:
+             application/json:
+               schema: { $ref: '#/components/schemas/FeedbackItem' }
  
    /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_ID/{Feedback_ID}:
      patch:
