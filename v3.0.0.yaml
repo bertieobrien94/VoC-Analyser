@@ -76,6 +76,24 @@ components:
         Created_By:  { type: string }
         Created_At:  { type: string, format: date-time }
         Updated_At:  { type: string, format: date-time }
+      x-validationRules:
+        - name: feedback_term_id_must_exist
+          summary: "When Term_ID is supplied, it must reference an existing Term row."
+          expression: "Term_ID is null or term exists"
+        - name: feedback_term_must_resolve_to_active
+          summary: "Reject Draft Terms. Deprecated Terms remap to Canonical_ID when present; otherwise reject the write."
+          expression: "Term_ID is null or term.Status = 'Active' or (term.Status = 'Deprecated' and term.Canonical_ID is not null)"
+        - name: feedback_mapping_level_must_match_term_level
+          summary: "If Term_ID is provided, mapping_level must match the referenced Term's Level."
+          expression: "Term_ID is null or (mapping_level is not null and mapping_level = term.Level)"
+          status: 409
+          hint: "Set mapping_level to the selected Term's Level."
+      x-writeTransforms:
+        - name: remap_feedback_term_to_canonical
+          summary: "If a deprecated Term with a Canonical_ID is provided, automatically replace Term_ID with the canonical value before persisting."
+          when: "term.Status = 'Deprecated' and term.Canonical_ID is not null"
+          set:
+            Term_ID: "term.Canonical_ID"
 
     FeedbackItemUpdate:
       type: object
@@ -101,6 +119,24 @@ components:
           maximum: 1
           description: "Confidence for the assigned Term"
         Updated_At:  { type: string, format: date-time }
+      x-validationRules:
+        - name: feedback_update_term_id_must_exist
+          summary: "If Term_ID is included in the update payload, it must reference an existing Term row."
+          expression: "Term_ID is null or term exists"
+        - name: feedback_update_term_must_resolve_to_active
+          summary: "Reject Draft Terms. Deprecated Terms remap to Canonical_ID when present; otherwise reject the write."
+          expression: "Term_ID is null or term.Status = 'Active' or (term.Status = 'Deprecated' and term.Canonical_ID is not null)"
+        - name: feedback_update_mapping_level_must_match_term_level
+          summary: "If Term_ID is provided, mapping_level must match the referenced Term's Level."
+          expression: "Term_ID is null or (mapping_level is not null and mapping_level = term.Level)"
+          status: 409
+          hint: "Set mapping_level to the selected Term's Level."
+      x-writeTransforms:
+        - name: remap_feedback_update_term_to_canonical
+          summary: "When Term_ID references a deprecated Term with Canonical_ID, automatically set Term_ID to the canonical value before persisting."
+          when: "term.Status = 'Deprecated' and term.Canonical_ID is not null"
+          set:
+            Term_ID: "term.Canonical_ID"
 
     Term:
       type: object
@@ -120,7 +156,7 @@ components:
           type: string
           enum: [Active, Deprecated, Draft]
         Parent_ID:    { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
-        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms" }
+        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms (must differ from Term_ID)" }
         Ordinal:     { type: integer, minimum: 0, nullable: true }
         Depth:       { type: integer, nullable: true }
         Path_IDs:    { type: string, nullable: true }
@@ -129,6 +165,52 @@ components:
         Created_By:  { type: string }
         Created_At:  { type: string, format: date-time }
         Updated_At:  { type: string, format: date-time }
+      allOf:
+        - if:
+            properties:
+              Level: { const: 1 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID: { const: null }
+        - if:
+            properties:
+              Level: { const: 2 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Level: { const: 3 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Status: { const: Deprecated }
+            required: [Status]
+          then:
+            required: [Canonical_ID]
+            properties:
+              Canonical_ID:
+                type: string
+                nullable: false
+      x-validationRules:
+        - name: level_parent_consistency
+          summary: "Level 2 Terms require a Level 1 parent; Level 3 Terms require a Level 2 parent."
+          expression: "(Level != 2 or parent.Level = 1) and (Level != 3 or parent.Level = 2)"
+        - name: deprecated_terms_require_distinct_canonical
+          summary: "Deprecated Terms must reference a different Canonical_ID."
+          expression: "Status != 'Deprecated' or (Canonical_ID is not null and Canonical_ID <> Term_ID)"
 
     TermUpdate:
       type: object
@@ -148,7 +230,7 @@ components:
           type: string
           enum: [Active, Deprecated, Draft]
         Parent_ID:    { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
-        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms" }
+        Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms (must differ from Term_ID)" }
         Ordinal:     { type: integer, minimum: 0, nullable: true }
         Depth:       { type: integer, nullable: true }
         Path_IDs:    { type: string, nullable: true }
@@ -157,6 +239,52 @@ components:
         Created_By:  { type: string }
         Created_At:  { type: string, format: date-time }
         Updated_At:  { type: string, format: date-time }
+      allOf:
+        - if:
+            properties:
+              Level: { const: 1 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID: { const: null }
+        - if:
+            properties:
+              Level: { const: 2 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Level: { const: 3 }
+            required: [Level]
+          then:
+            required: [Parent_ID]
+            properties:
+              Parent_ID:
+                type: string
+                nullable: false
+        - if:
+            properties:
+              Status: { const: Deprecated }
+            required: [Status]
+          then:
+            required: [Canonical_ID]
+            properties:
+              Canonical_ID:
+                type: string
+                nullable: false
+      x-validationRules:
+        - name: update_level_parent_consistency
+          summary: "When updating Level to 2 or 3, include the correct parent Term reference."
+          expression: "(Level != 2 or Parent_ID is not null) and (Level != 3 or Parent_ID is not null)"
+        - name: update_deprecated_terms_require_distinct_canonical
+          summary: "Status=Deprecated updates must supply a Canonical_ID different from Term_ID."
+          expression: "Status != 'Deprecated' or (Canonical_ID is not null and Canonical_ID <> Term_ID)"
 
 paths:
 
@@ -223,16 +351,31 @@ paths:
                schema:
                  type: array
                  items: { $ref: '#/components/schemas/FeedbackItem' }
+
      post:
        operationId: createFeedbackItem
        summary: Create Feedback Item
+       description: >
+         Create a new Feedback Item. The server enforces idempotency by calculating
+         `sha256(Quote|Person|Timestamp|Term_ID)` and, when a collision occurs,
+         applies the payload as an update to the existing record (behaving like a
+         PATCH) and returns `200 OK` instead of `201 Created`.
        requestBody:
          required: true
          content:
            application/json:
              schema: { $ref: '#/components/schemas/FeedbackItem' }
        responses:
-         '201': { description: Created }
+         '201':
+           description: Created
+           content:
+             application/json:
+               schema: { $ref: '#/components/schemas/FeedbackItem' }
+         '200':
+           description: Updated existing Feedback Item via idempotency hash collision
+           content:
+             application/json:
+               schema: { $ref: '#/components/schemas/FeedbackItem' }
  
    /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_ID/{Feedback_ID}:
      patch:
