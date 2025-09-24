@@ -189,16 +189,11 @@ paths:
         '201': { description: Created }
 
   /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa/Term_ID/{Term_ID}:
+    parameters:
+      - $ref: '#/components/parameters/TermIdParam'
     patch:
       operationId: updateTerm
       summary: Update Term by Term_ID
-      parameters:
-        - name: Term_ID
-          in: path
-          required: true
-          description: Primary key of a Term row
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -235,16 +230,11 @@ paths:
         '201': { description: Created }
 
   /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_ID/{Feedback_ID}:
+    parameters:
+      - $ref: '#/components/parameters/FeedbackIdParam'
     patch:
       operationId: updateFeedbackItem
       summary: Update Feedback Item by Feedback_ID
-      parameters:
-        - name: Feedback_ID
-          in: path
-          required: true
-          description: Primary key of a Feedback row
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -257,18 +247,13 @@ paths:
   # BULK REMAP: FeedbackItems by (old) Term_ID → new
   ###################################################
   /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Term_ID/{Term_ID}:
+    parameters:
+      - $ref: '#/components/parameters/TermIdParam'
     patch:
       operationId: bulkRemapFeedbackItemsByTerm
       summary: Bulk update FeedbackItems where Term_ID == old Term_ID
       description: >
         Use for canonicalization: remap all FeedbackItems from a deprecated Term to its Canonical_ID.
-      parameters:
-        - name: Term_ID
-          in: path
-          required: true
-          description: Primary key of a Term row
-          schema:
-            type: string
       requestBody:
         required: true
         content:
