@@ -83,6 +83,11 @@ components:
         - name: feedback_term_must_resolve_to_active
           summary: "Reject Draft Terms. Deprecated Terms remap to Canonical_ID when present; otherwise reject the write."
           expression: "Term_ID is null or term.Status = 'Active' or (term.Status = 'Deprecated' and term.Canonical_ID is not null)"
+        - name: feedback_mapping_level_must_match_term_level
+          summary: "If Term_ID is provided, mapping_level must match the referenced Term's Level."
+          expression: "Term_ID is null or (mapping_level is not null and mapping_level = term.Level)"
+          status: 409
+          hint: "Set mapping_level to the selected Term's Level."
       x-writeTransforms:
         - name: remap_feedback_term_to_canonical
           summary: "If a deprecated Term with a Canonical_ID is provided, automatically replace Term_ID with the canonical value before persisting."
@@ -121,6 +126,11 @@ components:
         - name: feedback_update_term_must_resolve_to_active
           summary: "Reject Draft Terms. Deprecated Terms remap to Canonical_ID when present; otherwise reject the write."
           expression: "Term_ID is null or term.Status = 'Active' or (term.Status = 'Deprecated' and term.Canonical_ID is not null)"
+        - name: feedback_update_mapping_level_must_match_term_level
+          summary: "If Term_ID is provided, mapping_level must match the referenced Term's Level."
+          expression: "Term_ID is null or (mapping_level is not null and mapping_level = term.Level)"
+          status: 409
+          hint: "Set mapping_level to the selected Term's Level."
       x-writeTransforms:
         - name: remap_feedback_update_term_to_canonical
           summary: "When Term_ID references a deprecated Term with Canonical_ID, automatically set Term_ID to the canonical value before persisting."
