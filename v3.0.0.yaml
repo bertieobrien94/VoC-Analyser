@@ -19,18 +19,6 @@ components:
       name: X-Api-Key
 
   parameters:
-    TermsSheetIdParam:
-      name: termsSheetId
-      in: path
-      required: true
-      description: Taxonomy Terms sheet ID (e.g., 895dac3e-2ad5-4f1a-96e7-ae12687b0cfa)
-      schema: { type: string }
-    FeedbackSheetIdParam:
-      name: feedbackSheetId
-      in: path
-      required: true
-      description: Feedback Items sheet ID (e.g., e1b92735-b604-4564-a285-c0e5c2614cb0)
-      schema: { type: string }
     TermIdParam:
       name: Term_ID
       in: path
@@ -176,13 +164,11 @@ paths:
   # TERMS (taxonomy v3.0)
   ############################
 
-  /sheets/{termsSheetId}:
+  /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa:
     get:
       operationId: listTerms
       summary: List Terms
       description: List Terms with optional client-side filtering.
-      parameters:
-        - $ref: '#/components/parameters/TermsSheetIdParam'
       responses:
         '200':
           description: OK
@@ -194,8 +180,6 @@ paths:
     post:
       operationId: createTerm
       summary: Create Term
-      parameters:
-        - $ref: '#/components/parameters/TermsSheetIdParam'
       requestBody:
         required: true
         content:
@@ -204,12 +188,11 @@ paths:
       responses:
         '201': { description: Created }
 
-  /sheets/{termsSheetId}/Term_ID/{Term_ID}:
+  /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa/Term_ID/{Term_ID}:
     patch:
       operationId: updateTerm
       summary: Update Term by Term_ID
       parameters:
-        - $ref: '#/components/parameters/TermsSheetIdParam'
         - $ref: '#/components/parameters/TermIdParam'
       requestBody:
         required: true
@@ -223,12 +206,10 @@ paths:
   # FEEDBACK ITEMS (v3.0 schema)
   ##################################
 
-  /sheets/{feedbackSheetId}:
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0:
     get:
       operationId: listFeedbackItems
       summary: List Feedback Items
-      parameters:
-        - $ref: '#/components/parameters/FeedbackSheetIdParam'
       responses:
         '200':
           description: OK
@@ -240,8 +221,6 @@ paths:
     post:
       operationId: createFeedbackItem
       summary: Create Feedback Item
-      parameters:
-        - $ref: '#/components/parameters/FeedbackSheetIdParam'
       requestBody:
         required: true
         content:
@@ -250,12 +229,11 @@ paths:
       responses:
         '201': { description: Created }
 
-  /sheets/{feedbackSheetId}/Feedback_ID/{Feedback_ID}:
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_ID/{Feedback_ID}:
     patch:
       operationId: updateFeedbackItem
       summary: Update Feedback Item by Feedback_ID
       parameters:
-        - $ref: '#/components/parameters/FeedbackSheetIdParam'
         - $ref: '#/components/parameters/FeedbackIdParam'
       requestBody:
         required: true
@@ -268,14 +246,13 @@ paths:
   ###################################################
   # BULK REMAP: FeedbackItems by (old) Term_ID → new
   ###################################################
-  /sheets/{feedbackSheetId}/Term_ID/{Term_ID}:
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Term_ID/{Term_ID}:
     patch:
       operationId: bulkRemapFeedbackItemsByTerm
       summary: Bulk update FeedbackItems where Term_ID == old Term_ID
       description: >
         Use for canonicalization: remap all FeedbackItems from a deprecated Term to its Canonical_ID.
       parameters:
-        - $ref: '#/components/parameters/FeedbackSheetIdParam'
         - $ref: '#/components/parameters/TermIdParam'
       requestBody:
         required: true
