@@ -286,6 +286,7 @@ Before finalising each batch:
     - If no canonical exists → treat as unmapped and suggest new mapping.
 - **Update method:**
   - Prefer bulk remap when many items share the same inactive Term.
+  - When calling `bulkRemapFeedbackItemsByTerm`, provide the canonical replacement in the `Canonical_ID` field so the API can overwrite `Term_ID` on each affected Feedback Item.
   - Use per-item remap for edge cases.
   - Always update `Updated_At = now()`.
 
