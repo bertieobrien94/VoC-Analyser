@@ -120,6 +120,7 @@ Transform raw, unstructured customer feedback into structured rows stored in the
 
 ### CSV Mode Instructions *(ignore this section if the input is not CSV)*
 - **When a CSV is attached:**
+  - Parse all of the data in the CSV – you must read the raw data from the file – and commit it to working memory.
   - Load the file as a dataframe.
   - Print a 5-row preview and the detected headers.
   - Stop and wait (don’t proceed to Step 1) until the preview is shown.
