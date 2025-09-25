@@ -4,7 +4,7 @@ info:
   version: 3.0.0
   description: >
     OpenAPI for Feedback Items and Terms (single hierarchical taxonomy table).
-    Aligns with v3.0 instructions: Type enum, Term_ID, mapping_level, mapping_confidence,
+    Aligns with v3.0 instructions: Type enum, Term_ID, Mapping_Level, Mapping_Confidence,
     canonicalization via Canonical_ID, and bulk remap by Term.
 servers:
   - url: https://api.sheetbest.com
@@ -64,11 +64,11 @@ components:
           type: string
           enum: ["Email","Transcript","Message","Support ticket","RFI/RFP","Unknown"]
         Source_Ref:  { type: string, nullable: true, description: "URL/transcript/file ref" }
-        mapping_level:
+        Mapping_Level:
           type: integer
           enum: [1,2,3]
           description: "1=Category, 2=Subcategory, 3=Subject"
-        mapping_confidence:
+        Mapping_Confidence:
           type: number
           minimum: 0
           maximum: 1
@@ -83,11 +83,11 @@ components:
         - name: feedback_term_must_resolve_to_active
           summary: "Reject Draft Terms. Deprecated Terms remap to Canonical_ID when present; otherwise reject the write."
           expression: "Term_ID is null or term.Status = 'Active' or (term.Status = 'Deprecated' and term.Canonical_ID is not null)"
-        - name: feedback_mapping_level_must_match_term_level
-          summary: "If Term_ID is provided, mapping_level must match the referenced Term's Level."
-          expression: "Term_ID is null or (mapping_level is not null and mapping_level = term.Level)"
+        - name: feedback_Mapping_Level_must_match_term_level
+          summary: "If Term_ID is provided, Mapping_Level must match the referenced Term's Level."
+          expression: "Term_ID is null or (Mapping_Level is not null and Mapping_Level = term.Level)"
           status: 409
-          hint: "Set mapping_level to the selected Term's Level."
+          hint: "Set Mapping_Level to the selected Term's Level."
       x-writeTransforms:
         - name: remap_feedback_term_to_canonical
           summary: "If a deprecated Term with a Canonical_ID is provided, automatically replace Term_ID with the canonical value before persisting."
@@ -109,11 +109,11 @@ components:
           type: string
           nullable: true
           description: "FK to Terms (Status=Active)."
-        mapping_level:
+        Mapping_Level:
           type: integer
           enum: [1,2,3]
           description: "1=Category, 2=Subcategory, 3=Subject"
-        mapping_confidence:
+        Mapping_Confidence:
           type: number
           minimum: 0
           maximum: 1
@@ -126,11 +126,11 @@ components:
         - name: feedback_update_term_must_resolve_to_active
           summary: "Reject Draft Terms. Deprecated Terms remap to Canonical_ID when present; otherwise reject the write."
           expression: "Term_ID is null or term.Status = 'Active' or (term.Status = 'Deprecated' and term.Canonical_ID is not null)"
-        - name: feedback_update_mapping_level_must_match_term_level
-          summary: "If Term_ID is provided, mapping_level must match the referenced Term's Level."
-          expression: "Term_ID is null or (mapping_level is not null and mapping_level = term.Level)"
+        - name: feedback_update_Mapping_Level_must_match_term_level
+          summary: "If Term_ID is provided, Mapping_Level must match the referenced Term's Level."
+          expression: "Term_ID is null or (Mapping_Level is not null and Mapping_Level = term.Level)"
           status: 409
-          hint: "Set mapping_level to the selected Term's Level."
+          hint: "Set Mapping_Level to the selected Term's Level."
       x-writeTransforms:
         - name: remap_feedback_update_term_to_canonical
           summary: "When Term_ID references a deprecated Term with Canonical_ID, automatically set Term_ID to the canonical value before persisting."
