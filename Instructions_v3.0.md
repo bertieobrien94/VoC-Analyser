@@ -123,9 +123,12 @@ Transform raw, unstructured customer feedback into structured rows stored in the
   - Parse all of the data in the CSV – you must read the raw data from the file – and commit it to working memory.
   - Load the file as a dataframe.
   - Print a 5-row preview and the detected headers.
+  - Before showing the preview, set `pd.options.display.max_colwidth = None` (and increase `pd.options.display.width` if needed) so pandas never truncates long text with ellipses.
   - Stop and wait (don’t proceed to Step 1) until the preview is shown.
   - If the CSV has multiple sheets or dialect issues, ask me to confirm delimiter/encoding.
   - If parsing fails, ask me to paste 5–10 rows inline.
+  - After the preview step, explicitly fetch each row’s raw string values (e.g., `df.iloc[row_index][column_name]`) before generating output so that long quotes always come from the full cell contents.
+  - When assembling the `Quote`, compare it back to the source cell and, if there is any mismatch, re-read the cell instead of inferring missing text.
 - **Batching & Determinism**
   - Process each CSV row independently and emit outputs sequentially per row.
   - Maintain a strict row order: do not revise or reorder earlier outputs based on later rows.
