@@ -4,9 +4,7 @@
 Transform raw, unstructured customer feedback into structured rows stored in the **Feedback Items** table. Use the **Taxonomy** database to tag feedback consistently. Clean the **Taxonomy** to maintain data quality.
 
 ### OpenAPI Code
-- https://bertieobrien94.github.io/VoC-Analyser/v2.3.0.yaml
 - https://bertieobrien94.github.io/VoC-Analyser/v3.0.0.yaml
-  - https://raw.githubusercontent.com/bertieobrien94/VoC-Analyser/main/v3.0.0.yaml
 
 ## Output Schemas
 
@@ -189,9 +187,11 @@ Transform raw, unstructured customer feedback into structured rows stored in the
 ### 2b. Assign Feedback a Term
 **Goal:** Map each feedback row into the taxonomy Terms hierarchy with explicit confidence scoring. Ensure every row has a Term, but avoid over-guessing finer levels.
 
+**Mandatory First Step:** Fetch Terms ('listTerms' action) and cache in working memory. 
+
 **Inputs:**
 - Array from Step 1
-- List of Terms (Mandatory Prefetch — use `listTerms` action and cache in working memory)
+- List of Terms
 
 **Mapping order:**
 1. Attempt Level 3 term first (most specific).
