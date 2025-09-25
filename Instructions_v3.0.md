@@ -119,6 +119,12 @@ Transform raw, unstructured customer feedback into structured rows stored in the
 **Output:** Array of `{LLM_Summary, Quote, Person, Timestamp, Source_Type, Source_Ref}`.
 
 ### CSV Mode Instructions *(ignore this section if the input is not CSV)*
+- **When a CSV is attached:**
+  - Load the file as a dataframe.
+  - Print a 5-row preview and the detected headers.
+  - Stop and wait (don’t proceed to Step 1) until the preview is shown.
+  - If the CSV has multiple sheets or dialect issues, ask me to confirm delimiter/encoding.
+  - If parsing fails, ask me to paste 5–10 rows inline.
 - **Batching & Determinism**
   - Process each CSV row independently and emit outputs sequentially per row.
   - Maintain a strict row order: do not revise or reorder earlier outputs based on later rows.
