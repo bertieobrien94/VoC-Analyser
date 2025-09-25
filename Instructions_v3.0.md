@@ -118,6 +118,15 @@ Transform raw, unstructured customer feedback into structured rows stored in the
 
 **Output:** Array of `{LLM_Summary, Quote, Person, Timestamp, Source_Type, Source_Ref}`.
 
+### CSV Mode Instructions *(ignore this section if the input is not CSV)*
+- **Batching & Determinism**
+  - Process each CSV row independently and emit outputs sequentially per row.
+  - Maintain a strict row order: do not revise or reorder earlier outputs based on later rows.
+  - If a row contains text longer than 2,000 characters, process it as a single-row batch to prevent context bleed.
+- **Implementation Notes (for Codex)**
+  - Iterate row-by-row, yielding the completed output for the current row before reading the next one.
+  - When a single row generates multiple feedback items, emit all items contiguously before advancing to the following row.
+
 ### 1a. Identify Scope of Feedback
 - Only extract feedback expressed by customers/users.
 - Extract every bit of feedback expressed by customers/users.
