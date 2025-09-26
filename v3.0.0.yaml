@@ -155,6 +155,8 @@ components:
         Status:
           type: string
           enum: [Active, Deprecated, Draft]
+          default: Active
+          description: "Lifecycle state. Send 'Active' when creating new Terms; use 'Deprecated' only when remapping, and reserve 'Draft' for manual staging."
         Parent_ID:    { type: string, nullable: true, description: "NULL for Level=1; Level 2→L1; Level 3→L2" }
         Canonical_ID: { type: string, nullable: true, description: "Active replacement for Deprecated terms (must differ from Term_ID)" }
         Ordinal:     { type: integer, minimum: 0, nullable: true }

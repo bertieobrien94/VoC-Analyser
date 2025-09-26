@@ -22,7 +22,11 @@ components:
         Subject_ID:           { type: string, description: "UUID, subj_xxxx" }
         Subject_Name:         { type: string, description: "Specific taxonomy subject name (ideally unique)" }
         Synonyms:             { type: string, description: "Comma/semicolon-separated alternates" }
-        Status:               { type: string, enum: ["Draft", "Active", "Deleted"] }
+        Status:
+          type: string
+          enum: ["Draft", "Active", "Deleted"]
+          default: "Active"
+          description: "Lifecycle state. Create new Subjects as Active; reserve Draft for manual staging workflows."
         Category_ID:          { type: string, nullable: true, description: "FK to Categories (Status=Active)" }
         Subcategory_ID:       { type: string, nullable: true, description: "FK to Subcategories (Status=Active)" }
         Notes:                { type: string, description: "Free text; record merge actions here" }
@@ -39,7 +43,10 @@ components:
       properties:
         Subject_Name:         { type: string }
         Synonyms:             { type: string }
-        Status:               { type: string, enum: ["Draft", "Active", "Deleted"] }
+        Status:
+          type: string
+          enum: ["Draft", "Active", "Deleted"]
+          description: "Lifecycle state. Use Active for new Subjects; Draft remains for manual staging."
         Category_ID:          { type: string, nullable: true }
         Subcategory_ID:       { type: string, nullable: true }
         Notes:                { type: string }
@@ -58,7 +65,11 @@ components:
         Category_ID:           { type: string, description: "UUID, like cat_001" }
         Canonical_Category_ID: { type: string, nullable: true, description: "FK to canonical Category_ID when merged/deleted" }
         Description:           { type: string, description: "Description of the category to guide mapping" }
-        Status:                { type: string, enum: ["Draft", "Active", "Deleted"] }
+        Status:
+          type: string
+          enum: ["Draft", "Active", "Deleted"]
+          default: "Active"
+          description: "Lifecycle state. Create new Categories as Active; Draft is for manual staging only."
         Created_By:            { type: string, description: "Person or Machine who created the record" }
         Created_At:            { type: string, description: "ISO-8601 timestamp" }
         Updated_At:            { type: string, description: "ISO-8601 timestamp" }
@@ -73,7 +84,10 @@ components:
         Category_Name:         { type: string }
         Canonical_Category_ID: { type: string, nullable: true }
         Description:           { type: string }
-        Status:                { type: string, enum: ["Draft", "Active", "Deleted"] }
+        Status:
+          type: string
+          enum: ["Draft", "Active", "Deleted"]
+          description: "Lifecycle state. Keep new Categories Active; Draft reserved for manual staging."
         Created_By:            { type: string }
         Created_At:            { type: string }
         Updated_At:            { type: string }
@@ -90,7 +104,11 @@ components:
         Category_ID:              { type: string, nullable: true, description: "FK to Categories (Status=Active)" }
         Canonical_Subcategory_ID: { type: string, nullable: true, description: "FK to canonical Subcategory_ID when merged/deleted" }
         Description:              { type: string, description: "Description to guide mapping" }
-        Status:                   { type: string, enum: ["Draft", "Active", "Deleted"] }
+        Status:
+          type: string
+          enum: ["Draft", "Active", "Deleted"]
+          default: "Active"
+          description: "Lifecycle state. Create new Subcategories as Active; Draft is reserved for manual staging."
         Created_By:               { type: string, description: "Person or Machine who created the record" }
         Created_At:               { type: string, description: "ISO-8601 timestamp" }
         Updated_At:               { type: string, description: "ISO-8601 timestamp" }
@@ -106,7 +124,10 @@ components:
         Category_ID:              { type: string, nullable: true }
         Canonical_Subcategory_ID: { type: string, nullable: true }
         Description:              { type: string }
-        Status:                   { type: string, enum: ["Draft", "Active", "Deleted"] }
+        Status:
+          type: string
+          enum: ["Draft", "Active", "Deleted"]
+          description: "Lifecycle state. Use Active for new Subcategories; Draft reserved for manual staging."
         Created_By:               { type: string }
         Created_At:               { type: string }
         Updated_At:               { type: string }
