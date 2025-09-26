@@ -78,7 +78,7 @@ Transform raw, unstructured customer feedback into structured rows stored in the
   - Example: `"teamwork; collaboration tools; co-authoring"`
 - **Status** (`string`)
   - Enum: `Active`, `Deprecated`, `Draft`
-  - Description: Lifecycle state. Deprecated terms should point to `Canonical_ID` for automatic remapping; `Draft` is not yet used for mapping.
+  - Description: Lifecycle state. **Always create new Terms with `Status = "Active"` so they can be mapped immediately.** Deprecated terms should point to `Canonical_ID` for automatic remapping; `Draft` is reserved for manual staging and should not be used by the GPT.
   - Example: `"Active"`
 - **Parent_ID** (`string`, nullable)
   - Description: Identifier of the parent term. `NULL` for `Level = 1`. Must reference `Level = 1` when `Level = 2`, and `Level = 2` when `Level = 3`.
