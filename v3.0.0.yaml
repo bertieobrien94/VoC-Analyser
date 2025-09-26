@@ -292,137 +292,169 @@ paths:
   # TERMS (taxonomy v3.0)
   ############################
   
-   /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa:
-     get:
-       operationId: listTerms
-       summary: List Terms
-       description: List Terms with optional client-side filtering.
-       responses:
-         '200':
-           description: OK
-           content:
-             application/json:
-               schema:
-                 type: array
-                 items: { $ref: '#/components/schemas/Term' }
-     post:
-       operationId: createTerm
-       summary: Create Term
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema: { $ref: '#/components/schemas/Term' }
-       responses:
-         '201': { description: Created }
- 
-   /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa/Term_ID/{Term_ID}:
-     patch:
-       operationId: updateTerm
-       summary: Update Term by Term_ID
-       parameters:
-         - name: Term_ID
-           in: path
-           required: true
-           description: Primary key of a Term row
-           schema:
-             type: string
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema: { $ref: '#/components/schemas/TermUpdate' }
-       responses:
-         '200': { description: Updated }
- 
-   ##################################
-   # FEEDBACK ITEMS (v3.0 schema)
-   ##################################
- 
-   /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0:
-     get:
-       operationId: listFeedbackItems
-       summary: List Feedback Items
-       responses:
-         '200':
-           description: OK
-           content:
-             application/json:
-               schema:
-                 type: array
-                 items: { $ref: '#/components/schemas/FeedbackItem' }
+  /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa:
+    get:
+      operationId: listTerms
+      summary: List Terms
+      description: List Terms with optional client-side filtering.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Term' }
+    post:
+      operationId: createTerm
+      summary: Create Term
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Term' }
+      responses:
+        '201': { description: Created }
 
-     post:
-       operationId: createFeedbackItem
-       summary: Create Feedback Item
-       description: >
-         Create a new Feedback Item. The server enforces idempotency by calculating
-         `sha256(Quote|Person|Timestamp|Term_ID)` and, when a collision occurs,
-         applies the payload as an update to the existing record (behaving like a
-         PATCH) and returns `200 OK` instead of `201 Created`.
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema: { $ref: '#/components/schemas/FeedbackItem' }
-       responses:
-         '201':
-           description: Created
-           content:
-             application/json:
-               schema: { $ref: '#/components/schemas/FeedbackItem' }
-         '200':
-           description: Updated existing Feedback Item via idempotency hash collision
-           content:
-             application/json:
-               schema: { $ref: '#/components/schemas/FeedbackItem' }
+  /sheets/895dac3e-2ad5-4f1a-96e7-ae12687b0cfa/Term_ID/{Term_ID}:
+    patch:
+      operationId: updateTerm
+      summary: Update Term by Term_ID
+      parameters:
+        - name: Term_ID
+          in: path
+          required: true
+          description: Primary key of a Term row
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TermUpdate' }
+      responses:
+        '200': { description: Updated }
  
-   /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_ID/{Feedback_ID}:
-     patch:
-       operationId: updateFeedbackItem
-       summary: Update Feedback Item by Feedback_ID
-       parameters:
-         - in: path
-           name: Feedback_ID
-           required: true
-           description: Primary key of a Feedback row
-           schema: { type: string }
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema: { $ref: '#/components/schemas/FeedbackItemUpdate' }
-       responses:
-         '200': { description: Updated }
+  ##################################
+  # FEEDBACK ITEMS (v3.0 schema)
+  ##################################
  
-   ###################################################
-   # BULK REMAP: FeedbackItems by (old) Term_ID → new
-   ###################################################
-   /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Term_ID/{Term_ID}:
-     patch:
-       operationId: bulkRemapFeedbackItemsByTerm
-       summary: Bulk update FeedbackItems where Term_ID == old Term_ID
-       description: >
-         Use for canonicalization: remap all FeedbackItems from a deprecated Term to its Canonical_ID.
-       parameters:
-         - in: path
-           name: Term_ID
-           required: true
-           description: Primary key of a Term row
-           schema: { type: string }
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema:
-               type: object
-               required: [ Canonical_Term_ID, Updated_At ]
-               properties:
-                 Canonical_Term_ID:
-                   type: string
-                   description: "The *new* canonical Term_ID to set on matching FeedbackItems"
-                 Updated_At:
-                   type: string
-                   format: date-time
-       responses:
-         '200': { description: Bulk Updated }
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0:
+    get:
+      operationId: listFeedbackItems
+      summary: List Feedback Items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FeedbackItem' }
+
+    post:
+      operationId: createFeedbackItem
+      summary: Create Feedback Item
+      description: >
+        Create a new Feedback Item. The server enforces idempotency by calculating
+        `sha256(Quote|Person|Timestamp|Term_ID)` and, when a collision occurs,
+        applies the payload as an update to the existing record (behaving like a
+        PATCH) and returns `200 OK` instead of `201 Created`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FeedbackItem' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FeedbackItem' }
+        '200':
+          description: Updated existing Feedback Item via idempotency hash collision
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FeedbackItem' }
+
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/bulk:
+    post:
+      operationId: bulkCreateFeedbackItems
+      summary: Bulk create Feedback Items
+      description: >
+        Insert multiple Feedback Items in one request. Each element of the array is
+        processed using the same idempotency hash logic as `createFeedbackItem`, so
+        duplicates are updated instead of inserted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items: { $ref: '#/components/schemas/FeedbackItem' }
+      responses:
+        '201':
+          description: Created rows
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FeedbackItem' }
+        '200':
+          description: Existing rows updated via idempotency hash collision
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FeedbackItem' }
+
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Feedback_ID/{Feedback_ID}:
+    patch:
+      operationId: updateFeedbackItem
+      summary: Update Feedback Item by Feedback_ID
+      parameters:
+        - in: path
+          name: Feedback_ID
+          required: true
+          description: Primary key of a Feedback row
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FeedbackItemUpdate' }
+      responses:
+        '200': { description: Updated }
+ 
+  ###################################################
+  # BULK REMAP: FeedbackItems by (old) Term_ID → new
+  ###################################################
+  /sheets/e1b92735-b604-4564-a285-c0e5c2614cb0/Term_ID/{Term_ID}:
+    patch:
+      operationId: bulkRemapFeedbackItemsByTerm
+      summary: Bulk update FeedbackItems where Term_ID == old Term_ID
+      description: >
+        Use for canonicalization: remap all FeedbackItems from a deprecated Term to its Canonical_ID.
+      parameters:
+        - in: path
+          name: Term_ID
+          required: true
+          description: Primary key of a Term row
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ Canonical_Term_ID, Updated_At ]
+              properties:
+                Canonical_Term_ID:
+                  type: string
+                  description: "The *new* canonical Term_ID to set on matching FeedbackItems"
+                Updated_At:
+                  type: string
+                  format: date-time
+      responses:
+        '200': { description: Bulk Updated }
